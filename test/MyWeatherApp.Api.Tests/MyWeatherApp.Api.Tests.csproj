@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\JOS.Tests.Integration.AspNet\JOS.Tests.Integration.AspNet.csproj" />
+      <ProjectReference Include="..\MyWeatherApp.Api\MyWeatherApp.Api.csproj" />
+    </ItemGroup>
+</Project>
