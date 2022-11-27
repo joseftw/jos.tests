@@ -7,5 +7,6 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\MyWeatherApp.Core\MyWeatherApp.Core.csproj" />
+      <ProjectReference Include="..\MyWeatherApp.Database\MyWeatherApp.Database.csproj" />
     </ItemGroup>
 </Project>

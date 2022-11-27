@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="EFCore.NamingConventions" Version="7.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MyWeatherApp.Common\MyWeatherApp.Common.csproj" />
+    <ProjectReference Include="..\MyWeatherApp.Core\MyWeatherApp.Core.csproj" />
+  </ItemGroup>
+</Project>

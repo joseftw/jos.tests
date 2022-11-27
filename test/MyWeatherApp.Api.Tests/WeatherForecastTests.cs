@@ -1,6 +1,6 @@
-using JOS.Tests.Integration;
 using Shouldly;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -14,15 +14,18 @@ namespace MyWeatherApp.Api.Tests;
 public class WeatherForecastTests : IClassFixture<MyWeatherAppApiFixture>
 {
     private readonly MyWeatherAppApiFixture _fixture;
+    private readonly PostgresDatabaseFixture _postgresDatabaseFixture;
 
-    public WeatherForecastTests(MyWeatherAppApiFixture fixture)
+    public WeatherForecastTests(MyWeatherAppApiFixture fixture, PostgresDatabaseFixture databaseFixture)
     {
         _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
+        _postgresDatabaseFixture = databaseFixture ?? throw new ArgumentNullException(nameof(databaseFixture));
     }
     
     [Fact]
     public async Task GET_WeatherForecast_ShouldReturn200Ok()
     {
+        await _postgresDatabaseFixture.ResetDatabase();
         var request = new HttpRequestMessage(HttpMethod.Get, "/weatherforecast");
         var client = _fixture.CreateClient();
 
@@ -34,6 +37,18 @@ public class WeatherForecastTests : IClassFixture<MyWeatherAppApiFixture>
     [Fact]
     public async Task GET_WeatherForecast_ShouldReturnExpectedForecast()
     {
+        await _postgresDatabaseFixture.ResetDatabase();
+        var arrangeDbContext = _postgresDatabaseFixture.CreateWeatherForecastDbContext();
+        var existingWeatherForecasts = new List<Core.WeatherForecast>
+        {
+            Core.WeatherForecast.Create(Guid.NewGuid(), DateOnly.Parse("2022-10-17"), 12, "Freezing"),
+            Core.WeatherForecast.Create(Guid.NewGuid(), DateOnly.Parse("2022-10-18"), 13, "Bracing"),
+            Core.WeatherForecast.Create(Guid.NewGuid(), DateOnly.Parse("2022-10-19"), 14, "Chilly"),
+            Core.WeatherForecast.Create(Guid.NewGuid(), DateOnly.Parse("2022-10-20"), 14, "Cool"),
+            Core.WeatherForecast.Create(Guid.NewGuid(), DateOnly.Parse("2022-10-21"), 14, "Mild"),
+        };
+        arrangeDbContext.WeatherForecasts.AddRange(existingWeatherForecasts);
+        await arrangeDbContext.SaveChangesAsync();
         var request = new HttpRequestMessage(HttpMethod.Get, "/weatherforecast");
         var client = _fixture.CreateClient();
 
@@ -42,6 +57,7 @@ public class WeatherForecastTests : IClassFixture<MyWeatherAppApiFixture>
         response.EnsureSuccessStatusCode();
         var responseContent = await response.Content.ReadAsStreamAsync();
         var jsonResponse = await JsonDocument.ParseAsync(responseContent);
+        jsonResponse.RootElement.ValueKind.ShouldBe(JsonValueKind.Array);
         var weatherForecastResponse = jsonResponse.RootElement.EnumerateArray();
         weatherForecastResponse.Count().ShouldBe(5);
         AssertWeatherForecast(weatherForecastResponse.ElementAt(0), "2022-10-17", "Freezing", 12);
@@ -56,6 +72,6 @@ public class WeatherForecastTests : IClassFixture<MyWeatherAppApiFixture>
     {
         weatherForecast.GetProperty("date").GetString().ShouldBe(date);
         weatherForecast.GetProperty("summary").GetString().ShouldBe(summary);
-        weatherForecast.GetProperty("temperatureCelsius").GetInt32().ShouldBe(temperatureC);
+        weatherForecast.GetProperty("temperature").GetInt32().ShouldBe(temperatureC);
     }
 }
