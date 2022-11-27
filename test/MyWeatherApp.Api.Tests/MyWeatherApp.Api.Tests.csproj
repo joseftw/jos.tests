@@ -3,4 +3,7 @@
       <ProjectReference Include="..\..\src\JOS.Tests.Integration.AspNet\JOS.Tests.Integration.AspNet.csproj" />
       <ProjectReference Include="..\MyWeatherApp.Api\MyWeatherApp.Api.csproj" />
     </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="Respawn" Version="6.0.0" />
+    </ItemGroup>
 </Project>

@@ -1,11 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0-rc.2.22476.2" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0" />
     </ItemGroup>
     <ItemGroup>
         <InternalsVisibleTo Include="MyApi.Tests" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\MyWeatherApp.Core\MyWeatherApp.Core.csproj" />
+      <ProjectReference Include="..\MyWeatherApp.Database\MyWeatherApp.Database.csproj" />
     </ItemGroup>
 </Project>
