@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres
+        image: postgres:15
         env:
           POSTGRES_USER: my_weather_app
           POSTGRES_PASSWORD: my_password
